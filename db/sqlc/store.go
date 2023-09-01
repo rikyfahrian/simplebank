@@ -12,7 +12,10 @@ type Store struct {
 }
 
 func NewStore(db *sql.DB) *Store {
-	return &Store{db: db}
+	return &Store{
+		db:      db,
+		Queries: New(db),
+	}
 }
 
 func (s *Store) ExecTx(ctx context.Context, fn func(*Queries) error) error {
