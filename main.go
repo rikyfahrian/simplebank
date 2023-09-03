@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"sync"
 	"techschool/api"
 	db "techschool/db/sqlc"
 
@@ -18,6 +19,15 @@ func main() {
 	store := db.NewStore(pg)
 	server := api.NewServer(store)
 
-	server.Start(":8080")
+	wg := sync.WaitGroup{}
+
+	wg.Add(1)
+	go func() {
+
+		defer wg.Done()
+		server.Start(":8080")
+	}()
+
+	wg.Wait()
 
 }
