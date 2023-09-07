@@ -110,6 +110,7 @@ func (s *SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (Transf
 		if err != nil {
 			return nil
 		}
+
 		result.ToAccount, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
 			ID:     arg.ToAccountID,
 			Amount: arg.Amount,

@@ -41,6 +41,6 @@ func RandomBalance() int64 {
 }
 
 func RandomCurrency() string {
-	cur := []string{"RP", "USD", "PSTR"}
+	cur := []string{"RP", "USD", "EUR"}
 	return cur[rand.Intn(len(cur))]
 }
