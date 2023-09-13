@@ -13,6 +13,6 @@ func HashPassword(password string) (string, error) {
 
 }
 
-func CheckPassword(passwordReq, password string) error {
-	return bcrypt.CompareHashAndPassword([]byte(password), []byte(passwordReq))
+func CheckPassword(passwordReq, passwordHash string) error {
+	return bcrypt.CompareHashAndPassword([]byte(passwordHash), []byte(passwordReq))
 }

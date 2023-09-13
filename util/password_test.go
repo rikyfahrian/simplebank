@@ -14,7 +14,7 @@ func TestPasswordHash(t *testing.T) {
 	require.NoError(t, err)
 	require.NotEmpty(t, pwHash)
 
-	err = CheckPassword(pwHash, pw)
+	err = CheckPassword(pw, pwHash)
 	require.NoError(t, err)
 
 	wrongPw := RandomString(8)
