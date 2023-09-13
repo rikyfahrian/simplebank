@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"techschool/util"
 	"testing"
 
@@ -28,11 +27,14 @@ func TestGetUser(t *testing.T) {
 
 func CreateRandUser(t *testing.T) User {
 
+	hashPW, err := util.HashPassword(util.RandomString(8))
+	require.NoError(t, err)
+
 	arg := CreateUserParams{
 		Username:       util.RandomName(),
-		HashedPassword: "secret",
+		HashedPassword: hashPW,
 		FullName:       util.RandomName(),
-		Email:          RandEmail(),
+		Email:          util.RandEmail(),
 	}
 
 	user, err := testQueries.CreateUser(context.Background(), arg)
@@ -41,8 +43,4 @@ func CreateRandUser(t *testing.T) User {
 
 	return user
 
-}
-
-func RandEmail() string {
-	return fmt.Sprintf("%s@gmail.com", util.RandomString(6))
 }
