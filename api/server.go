@@ -3,6 +3,8 @@ package api
 import (
 	"log"
 	db "techschool/db/sqlc"
+	"techschool/token"
+	"techschool/util"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -11,26 +13,27 @@ import (
 
 type Server struct {
 	store  db.Store
+	token  token.Maker
 	router *gin.Engine
 }
 
 func NewServer(store db.Store) *Server {
 
-	server := &Server{store: store}
-	router := gin.Default()
+	tokenMaker, err := token.NewPasetoMaker(util.RandomString(32))
+	if err != nil {
+		return nil
+	}
+
+	server := &Server{
+		store: store,
+		token: tokenMaker,
+	}
 
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		v.RegisterValidation("currency", validCurrency)
 	}
 
-	router.POST("/users", server.CreateUser)
-
-	router.POST("/accounts", server.createAccount)
-	router.GET("/accounts/:id", server.getAccount)
-	router.GET("/accounts", server.getAllAccounts)
-	router.POST("/transfers", server.createTransfer)
-
-	server.router = router
+	server.router = RouterSetup(server)
 	return server
 
 }
