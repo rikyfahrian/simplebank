@@ -12,9 +12,9 @@ import (
 )
 
 type Server struct {
-	store  db.Store
-	token  token.Maker
-	router *gin.Engine
+	store      db.Store
+	tokenMaker token.Maker
+	router     *gin.Engine
 }
 
 func NewServer(store db.Store) *Server {
@@ -25,15 +25,14 @@ func NewServer(store db.Store) *Server {
 	}
 
 	server := &Server{
-		store: store,
-		token: tokenMaker,
+		store:      store,
+		tokenMaker: tokenMaker,
 	}
 
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		v.RegisterValidation("currency", validCurrency)
 	}
-
-	server.router = RouterSetup(server)
+	server.RouterSetup()
 	return server
 
 }

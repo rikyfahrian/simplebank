@@ -2,15 +2,16 @@ package api
 
 import (
 	"database/sql"
+	"errors"
 	"log"
 	"net/http"
 	db "techschool/db/sqlc"
+	"techschool/token"
 
 	"github.com/gin-gonic/gin"
 )
 
 type createAccountRequest struct {
-	Owner    string `json:"owner" binding:"required"`
 	Currency string `json:"currency" binding:"required,currency"`
 }
 
@@ -24,8 +25,10 @@ func (s *Server) createAccount(c *gin.Context) {
 		return
 	}
 
+	authPayload := c.MustGet(authorizationPayloadKey).(*token.Payload)
+
 	arg := db.CreateAccountParams{
-		Owner:    req.Owner,
+		Owner:    authPayload.Username,
 		Currency: req.Currency,
 		Balance:  0,
 	}
@@ -67,6 +70,13 @@ func (s *Server) getAccount(c *gin.Context) {
 		return
 	}
 
+	payload := c.MustGet(authorizationPayloadKey).(*token.Payload)
+
+	if account.Owner != payload.Username {
+		c.JSON(http.StatusUnauthorized, errorResponse(errors.New("account doesn't belong to the authenticated user")))
+		return
+	}
+
 	c.JSON(http.StatusOK, account)
 
 }
@@ -85,7 +95,10 @@ func (s *Server) getAllAccounts(c *gin.Context) {
 		return
 	}
 
+	payload := c.MustGet(authorizationPayloadKey).(*token.Payload)
+
 	arg := db.ListAccountsParams{
+		Owner:  payload.Username,
 		Limit:  req.PageSize,
 		Offset: (req.PageID - 1) * req.PageSize,
 	}

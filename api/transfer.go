@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	db "techschool/db/sqlc"
+	"techschool/token"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,6 +29,12 @@ func (s *Server) createTransfer(c *gin.Context) {
 
 	fromAccount, isOK := s.validAccount(c, req.FromAccountID, req.Currency)
 	if !isOK {
+		return
+	}
+
+	authPayload := c.MustGet(authorizationHeaderKey).(*token.Payload)
+	if fromAccount.Owner != authPayload.Username {
+		c.JSON(http.StatusUnauthorized, errorResponse(errors.New("unauthorized")))
 		return
 	}
 

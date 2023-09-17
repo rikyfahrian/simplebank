@@ -2,18 +2,21 @@ package api
 
 import "github.com/gin-gonic/gin"
 
-func RouterSetup(server *Server) *gin.Engine {
+func (server *Server) RouterSetup() {
 
 	router := gin.Default()
 
 	router.POST("/users/login", server.LoginUser)
 	router.POST("/users", server.CreateUser)
 
-	router.POST("/accounts", server.createAccount)
-	router.GET("/accounts/:id", server.getAccount)
-	router.GET("/accounts", server.getAllAccounts)
-	router.POST("/transfers", server.createTransfer)
+	auth := router.Group("/").Use(authMiddleware(server.tokenMaker))
 
-	return router
+	auth.POST("/accounts", server.createAccount)
+	auth.GET("/accounts/:id", server.getAccount)
+	auth.GET("/accounts", server.getAllAccounts)
+
+	auth.POST("/transfers", server.createTransfer)
+
+	server.router = router
 
 }

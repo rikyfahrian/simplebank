@@ -11,6 +11,7 @@ import (
 	db "techschool/db/sqlc"
 	"techschool/util"
 	"testing"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
@@ -19,7 +20,8 @@ import (
 
 func TestGetAccountAPI(t *testing.T) {
 
-	account := randAccount()
+	user, _ := randomUser(t)
+	account := randAccount(user.Username)
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -36,6 +38,7 @@ func TestGetAccountAPI(t *testing.T) {
 	req, err := http.NewRequest("GET", url, nil)
 	require.NoError(t, err)
 
+	addAuthorization(t, req, server.tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
 	server.router.ServeHTTP(recorder, req)
 
 	//check response
@@ -45,7 +48,8 @@ func TestGetAccountAPI(t *testing.T) {
 
 func TestCreateAccountsAPI(t *testing.T) {
 
-	account := randAccount()
+	user, _ := randomUser(t)
+	account := randAccount(user.Username)
 
 	testCases := []struct {
 		name          string
@@ -108,7 +112,7 @@ func TestCreateAccountsAPI(t *testing.T) {
 			url := "/accounts"
 			req, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(data))
 			require.NoError(t, err)
-
+			addAuthorization(t, req, server.tokenMaker, authorizationTypeBearer, user.Username, time.Minute)
 			server.router.ServeHTTP(recorder, req)
 			tc.checkResponse(recorder)
 
@@ -118,10 +122,10 @@ func TestCreateAccountsAPI(t *testing.T) {
 
 }
 
-func randAccount() db.Account {
+func randAccount(owner string) db.Account {
 	return db.Account{
 		ID:       util.RandomInt(1, 1000),
-		Owner:    util.RandomName(),
+		Owner:    owner,
 		Balance:  util.RandomBalance(),
 		Currency: util.RandomCurrency(),
 	}
