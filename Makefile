@@ -26,4 +26,6 @@ run:
 
 mock: 
 	mockgen -package mockdb -destination db/mock/store.go -source db/sqlc/store.go 
-	
+
+dockerstart:
+	docker run --name simplebank --network bank-network -p 8080:8080 -e GIN_MODE=release simplebank:latest

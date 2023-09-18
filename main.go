@@ -11,7 +11,7 @@ import (
 
 func main() {
 
-	pg, err := sql.Open("postgres", "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable")
+	pg, err := sql.Open("postgres", "postgresql://root:secret@techschoolpgsql:5432/simple_bank?sslmode=disable")
 	if err != nil {
 		panic(err)
 	}
