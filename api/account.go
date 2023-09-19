@@ -3,7 +3,6 @@ package api
 import (
 	"database/sql"
 	"errors"
-	"log"
 	"net/http"
 	db "techschool/db/sqlc"
 	"techschool/token"
@@ -32,8 +31,6 @@ func (s *Server) createAccount(c *gin.Context) {
 		Currency: req.Currency,
 		Balance:  0,
 	}
-
-	log.Println(req)
 
 	account, err := s.store.CreateAccount(c, arg)
 	if err != nil {
