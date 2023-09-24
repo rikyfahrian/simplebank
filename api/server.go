@@ -12,19 +12,21 @@ import (
 )
 
 type Server struct {
+	config     *util.Config
 	store      db.Store
 	tokenMaker token.Maker
 	router     *gin.Engine
 }
 
-func NewServer(store db.Store) *Server {
+func NewServer(store db.Store, config *util.Config) *Server {
 
-	tokenMaker, err := token.NewPasetoMaker(util.RandomString(32))
+	tokenMaker, err := token.NewPasetoMaker(config.TokenKey)
 	if err != nil {
 		return nil
 	}
 
 	server := &Server{
+		config:     config,
 		store:      store,
 		tokenMaker: tokenMaker,
 	}

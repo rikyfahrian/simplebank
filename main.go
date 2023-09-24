@@ -5,19 +5,25 @@ import (
 	"sync"
 	"techschool/api"
 	db "techschool/db/sqlc"
+	"techschool/util"
 
 	_ "github.com/lib/pq"
 )
 
 func main() {
 
-	pg, err := sql.Open("postgres", "postgresql://root:secret@postgres:5432/simple_bank?sslmode=disable")
+	config, err := util.LoadConfig()
+	if err != nil {
+		panic(err)
+	}
+
+	pg, err := sql.Open(config.DBDriver, config.DBSource)
 	if err != nil {
 		panic(err)
 	}
 
 	store := db.NewStore(pg)
-	server := api.NewServer(store)
+	server := api.NewServer(store, config)
 
 	wg := sync.WaitGroup{}
 
@@ -25,7 +31,7 @@ func main() {
 	go func() {
 
 		defer wg.Done()
-		server.Start(":8080")
+		server.Start(config.ServerAddress)
 	}()
 
 	wg.Wait()

@@ -8,6 +8,7 @@ require (
 	github.com/go-playground/validator/v10 v10.15.3
 	github.com/golang/mock v1.6.0
 	github.com/google/uuid v1.3.1
+	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.9
 	github.com/o1egl/paseto v1.0.0
 	github.com/stretchr/testify v1.8.4

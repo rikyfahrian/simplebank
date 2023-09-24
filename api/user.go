@@ -99,7 +99,7 @@ func (s *Server) LoginUser(c *gin.Context) {
 		return
 	}
 
-	token, err := s.tokenMaker.CreateToken(user.Username, time.Hour)
+	token, err := s.tokenMaker.CreateToken(user.Username, time.Duration(time.Duration(s.config.AccesTokenDuration).Minutes()))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
