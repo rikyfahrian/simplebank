@@ -12,7 +12,7 @@ import (
 
 func main() {
 
-	config, err := util.LoadConfig()
+	config, err := util.LoadConfig(".env")
 	if err != nil {
 		panic(err)
 	}

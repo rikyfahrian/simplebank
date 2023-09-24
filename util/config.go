@@ -15,9 +15,9 @@ type Config struct {
 	AccesTokenDuration int
 }
 
-func LoadConfig() (*Config, error) {
+func LoadConfig(path string) (*Config, error) {
 
-	err := godotenv.Load()
+	err := godotenv.Load(path)
 	if err != nil {
 		return nil, err
 	}
