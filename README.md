@@ -20,6 +20,12 @@ Project ini menggunakan :
 
 -AWS
 
+-Mock Gen
+
+-SQLC Genereate
+
+-Golang Migrate
+
 -CI/CD Github Action
 
 
