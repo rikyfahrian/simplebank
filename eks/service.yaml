@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: simple-bank-api-service
+  name: simple-bank-api-service2
 spec:
   selector:
     app: simple-bank-api

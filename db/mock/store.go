@@ -10,6 +10,7 @@ import (
 	db "techschool/db/sqlc"
 
 	gomock "github.com/golang/mock/gomock"
+	uuid "github.com/google/uuid"
 )
 
 // MockStore is a mock of Store interface.
@@ -78,6 +79,21 @@ func (m *MockStore) CreateEntry(ctx context.Context, arg db.CreateEntryParams) (
 func (mr *MockStoreMockRecorder) CreateEntry(ctx, arg interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateEntry", reflect.TypeOf((*MockStore)(nil).CreateEntry), ctx, arg)
+}
+
+// CreateSession mocks base method.
+func (m *MockStore) CreateSession(ctx context.Context, arg db.CreateSessionParams) (db.Session, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateSession", ctx, arg)
+	ret0, _ := ret[0].(db.Session)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateSession indicates an expected call of CreateSession.
+func (mr *MockStoreMockRecorder) CreateSession(ctx, arg interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateSession", reflect.TypeOf((*MockStore)(nil).CreateSession), ctx, arg)
 }
 
 // CreateTransfer mocks base method.
@@ -167,6 +183,21 @@ func (m *MockStore) GetEntry(ctx context.Context, id int64) (db.Entry, error) {
 func (mr *MockStoreMockRecorder) GetEntry(ctx, id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetEntry", reflect.TypeOf((*MockStore)(nil).GetEntry), ctx, id)
+}
+
+// GetSession mocks base method.
+func (m *MockStore) GetSession(ctx context.Context, id uuid.UUID) (db.Session, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSession", ctx, id)
+	ret0, _ := ret[0].(db.Session)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetSession indicates an expected call of GetSession.
+func (mr *MockStoreMockRecorder) GetSession(ctx, id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSession", reflect.TypeOf((*MockStore)(nil).GetSession), ctx, id)
 }
 
 // GetTransfer mocks base method.

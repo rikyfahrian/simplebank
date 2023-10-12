@@ -15,7 +15,7 @@ func TestJWTMaker(t *testing.T) {
 
 	username := util.RandomName()
 
-	token, err := maker.CreateToken(username, time.Minute)
+	token, _, err := maker.CreateToken(username, time.Minute)
 	require.NoError(t, err)
 
 	payload, err := maker.VerifyToken(token)
