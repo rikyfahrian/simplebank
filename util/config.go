@@ -10,7 +10,8 @@ import (
 type Config struct {
 	DBDriver             string
 	DBSource             string
-	ServerAddress        string
+	HTTPServerAddress    string
+	GRPCServerAddress    string
 	TokenKey             string
 	AccesTokenDuration   int
 	RefreshTokenDuration int
@@ -35,7 +36,8 @@ func LoadConfig(path string) (*Config, error) {
 	return &Config{
 		DBDriver:             os.Getenv("DB_DRIVER"),
 		DBSource:             os.Getenv("DB_SOURCE"),
-		ServerAddress:        os.Getenv("SERVER_ADDRESS"),
+		HTTPServerAddress:    os.Getenv("HTTP_SERVER_ADDRESS"),
+		GRPCServerAddress:    os.Getenv("GRPC_SERVER_ADDRESS"),
 		TokenKey:             os.Getenv("TOKEN_KEY"),
 		AccesTokenDuration:   AccesstokenDuration,
 		RefreshTokenDuration: RefreshTokenDuration,

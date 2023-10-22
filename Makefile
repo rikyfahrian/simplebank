@@ -25,7 +25,19 @@ run:
 	go run main.go
 
 mock: 
-	mockgen -package mockdb -destination db/mock/store.go -source db/sqlc/store.go 
+	mockgen -package mockdb -destination db/mock/store.go -source db/sqlc/store.go  
 
 dockerstart:
 	docker run --name simplebank --network bank-network -p 8080:8080 -e GIN_MODE=release simplebank:latest
+
+proto:
+	rm -f pb/*.go
+	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
+	--go-grpc_out=pb --go-grpc_opt=paths=source_relative \
+	--grpc-gateway_out=pb --grpc-gateway_opt paths=source_relative \
+	proto/*.proto
+
+evans: 
+	evans --host localhost --port 9090 -r repl
+
+.PHONY : proto
