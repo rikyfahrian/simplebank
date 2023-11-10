@@ -10,11 +10,14 @@ import (
 type Config struct {
 	DBDriver             string
 	DBSource             string
+	MigrationURL         string
 	HTTPServerAddress    string
 	GRPCServerAddress    string
 	TokenKey             string
 	AccesTokenDuration   int
 	RefreshTokenDuration int
+	Environment          string
+	RedisAddress         string
 }
 
 func LoadConfig(path string) (*Config, error) {
@@ -39,6 +42,9 @@ func LoadConfig(path string) (*Config, error) {
 		HTTPServerAddress:    os.Getenv("HTTP_SERVER_ADDRESS"),
 		GRPCServerAddress:    os.Getenv("GRPC_SERVER_ADDRESS"),
 		TokenKey:             os.Getenv("TOKEN_KEY"),
+		Environment:          os.Getenv("ENVIRONMENT"),
+		MigrationURL:         os.Getenv("MIGRATION_URL"),
+		RedisAddress:         os.Getenv("REDIS_ADDRESS"),
 		AccesTokenDuration:   AccesstokenDuration,
 		RefreshTokenDuration: RefreshTokenDuration,
 	}, nil

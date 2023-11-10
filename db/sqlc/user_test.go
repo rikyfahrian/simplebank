@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"techschool/util"
 	"testing"
 
@@ -42,5 +43,24 @@ func CreateRandUser(t *testing.T) User {
 	require.NotEmpty(t, user)
 
 	return user
+
+}
+
+func TestUpdateOnlyEmail(t *testing.T) {
+
+	oldUser := CreateRandUser(t)
+
+	newEmail := util.RandEmail()
+
+	updated, err := testQueries.UpdateUser(context.Background(), UpdateUserParams{
+		Username: oldUser.Username,
+		Email: sql.NullString{
+			String: newEmail,
+			Valid:  true,
+		},
+	})
+
+	require.NoError(t, err)
+	require.NotEqual(t, oldUser.Email, updated.Email)
 
 }

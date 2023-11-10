@@ -5,16 +5,18 @@ import (
 	"techschool/pb"
 	"techschool/token"
 	"techschool/util"
+	"techschool/worker"
 )
 
 type Server struct {
 	pb.UnimplementedSimpleBankServer
-	config     *util.Config
-	store      db.Store
-	tokenMaker token.Maker
+	config          *util.Config
+	store           db.Store
+	tokenMaker      token.Maker
+	taskDistributor worker.TaskDistributor
 }
 
-func NewServer(store db.Store, config *util.Config) (*Server, error) {
+func NewServer(store db.Store, config *util.Config, distributor worker.TaskDistributor) (*Server, error) {
 
 	tokenMaker, err := token.NewPasetoMaker(config.TokenKey)
 	if err != nil {
@@ -22,9 +24,10 @@ func NewServer(store db.Store, config *util.Config) (*Server, error) {
 	}
 
 	server := &Server{
-		config:     config,
-		store:      store,
-		tokenMaker: tokenMaker,
+		config:          config,
+		store:           store,
+		tokenMaker:      tokenMaker,
+		taskDistributor: distributor,
 	}
 
 	return server, nil

@@ -6,14 +6,21 @@ import (
 	db "techschool/db/sqlc"
 	"techschool/pb"
 	"techschool/util"
+	"techschool/val"
 	"time"
 
+	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func (s *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (*pb.LoginUserResponse, error) {
+
+	violation := ValidateLoginUserRequest(req)
+	if violation != nil {
+		return nil, invalidArgumentError(violation)
+	}
 
 	user, err := s.store.GetUser(ctx, req.Username)
 	if err != nil {
@@ -36,7 +43,6 @@ func (s *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (*pb.L
 	refreshToken, refreshPayload, err := s.tokenMaker.CreateToken(user.Username, time.Duration(s.config.RefreshTokenDuration*int(time.Hour)))
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "error : %s", "failed create refresh token")
-
 	}
 
 	metadata := s.extractMetaData(ctx)
@@ -64,5 +70,18 @@ func (s *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (*pb.L
 		RefreshTokenExpiredAt: timestamppb.New(refreshPayload.ExpiresAt),
 	}
 	return rsp, nil
+
+}
+
+func ValidateLoginUserRequest(req *pb.LoginUserRequest) (violations []*errdetails.BadRequest_FieldViolation) {
+
+	if err := val.ValidateUserName(req.GetUsername()); err != nil {
+		violations = append(violations, fieldViolation("username", err))
+	}
+
+	if err := val.ValidatePassword(req.GetPassword()); err != nil {
+		violations = append(violations, fieldViolation("password", err))
+	}
+	return violations
 
 }
